@@ -168,6 +168,10 @@ jobs:
           #   defines: '-G Ninja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DSD_HIPBLAS=ON -DCMAKE_BUILD_TYPE=Release -DAMDGPU_TARGETS="gfx1100;gfx1102;gfx1030" -DSD_BUILD_SHARED_LIBS=ON'
           - build: 'vulkan'
             defines: "-DSD_VULKAN=ON -DSD_BUILD_SHARED_LIBS=ON"
+          - build: 'all'
+            defines: "-DGGML_AVX=ON -DGGML_AVX2=ON -DGGML_AVX512=ON -DSD_CUDA=ON -DSD_VULKAN=ON -DSD_BUILD_SHARED_LIBS=ON -DCMAKE_CUDA_ARCHITECTURES=90;89;80;75"
+          - build: 'all_static'
+            defines: "-DGGML_AVX=ON -DGGML_AVX2=ON -DGGML_AVX512=ON -DSD_CUDA=ON -DSD_VULKAN=ON -DCMAKE_CUDA_ARCHITECTURES=90;89;80;75"
     steps:
       - name: Clone
         id: checkout
