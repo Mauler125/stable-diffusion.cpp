@@ -181,7 +181,7 @@ jobs:
 
       - name: Install cuda-toolkit
         id: cuda-toolkit
-        if: ${{ matrix.build == 'cuda12' }}
+        if: ${{ matrix.build == 'cuda12' || matrix.build == 'all' || matrix.build == 'all_static' }}
         uses: Jimver/cuda-toolkit@v0.2.19
         with:
           cuda: "12.6.2"
@@ -203,7 +203,7 @@ jobs:
           version: 1.11.1
       - name: Install Vulkan SDK
         id: get_vulkan
-        if: ${{ matrix.build == 'vulkan' }}
+        if: ${{ matrix.build == 'vulkan' || matrix.build == 'all' || matrix.build == 'all_static' }}
         run: |
           curl.exe -o $env:RUNNER_TEMP/VulkanSDK-Installer.exe -L "https://sdk.lunarg.com/sdk/download/${env:VULKAN_VERSION}/windows/VulkanSDK-${env:VULKAN_VERSION}-Installer.exe"
           & "$env:RUNNER_TEMP\VulkanSDK-Installer.exe" --accept-licenses --default-answer --confirm-command install
@@ -220,7 +220,7 @@ jobs:
 
       - name: Check AVX512F support
         id: check_avx512f
-        if: ${{ matrix.build == 'avx512' }}
+        if: ${{ matrix.build == 'avx512' || matrix.build == 'all' || matrix.build == 'all_static' }}
         continue-on-error: true
         run: |
           cd build
@@ -258,7 +258,7 @@ jobs:
 
       - name: Copy and pack Cuda runtime
         id: pack_cuda_runtime
-        if: ${{ ( github.event_name == 'push' && github.ref == 'refs/heads/master' && matrix.build == 'cuda12' ) || github.event.inputs.create_release == 'true' }}
+        if: ${{ ( github.event_name == 'push' && github.ref == 'refs/heads/master' && ( matrix.build == 'cuda12' || matrix.build == 'all' ) ) || github.event.inputs.create_release == 'true' }}
         run: |
           echo "Cuda install location: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}"
           $dst='.\build\bin\cudart'
@@ -266,7 +266,7 @@ jobs:
           7z a cudart-sd-bin-win-cu12-x64.zip $dst\*
 
       - name: Upload Cuda runtime
-        if: ${{ ( github.event_name == 'push' && github.ref == 'refs/heads/master' && matrix.build == 'cuda12' ) || github.event.inputs.create_release == 'true' }}
+        if: ${{ ( github.event_name == 'push' && github.ref == 'refs/heads/master' && ( matrix.build == 'cuda12' || matrix.build == 'all' ) ) || github.event.inputs.create_release == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: sd-cudart-sd-bin-win-cu12-x64.zip
